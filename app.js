@@ -3,7 +3,6 @@ var express         = require("express"),
     mongoose        = require("mongoose"),
     Event           = require("./Schema/EventSchema"),
     seedDB          = require("./Schema/seedDB");
-
 var app = express();
 app.use(bodyParser.urlencoded({
     extended: true
@@ -15,21 +14,11 @@ mongoose.connect("mongodb://localhost/Events");
 
 seedDB();
 
-app.listen("5000", ()=>{
+app.listen("5000", function(){
     console.log("Start ...");
 });
 
-// app.post('/events',function(req, res){
-//     Event.create(req.body,function(err, obj){
-//         if(err){
-//             console.log(err);
-//         }else{
-//             return res.json(obj).status(200);
-//         }
-//     });
-// });
-
-app.post("/events/:id/participants",(req,res)=>{
+app.post("/events/:id/participants",function(req,res){
     var temp_id = req.params.id;
     Event.findById(temp_id,function(err, resObj){
         if(err){
