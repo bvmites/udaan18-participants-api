@@ -1,7 +1,8 @@
-var express = require("express"),
-    bodyParser = require("body-parser"),
-    mongo = require("mongoose"),
-    methodOverride = require("method-override");
+var express         = require("express"),
+    bodyParser      = require("body-parser"),
+    mongoose        = require("mongoose"),
+    methodOverride  = require("method-override"),
+    Event           = require("./Schema/EventSchema");
 
 var app = express();
 app.use(bodyParser.urlencoded({
@@ -12,27 +13,8 @@ app.use(methodOverride("_method"));
 
 
 mongo.connect("mongodb://localhost/participants");
-var participantsSchema = new mongo.Schema({
-    name:{
-        type:String,
-        required:true
-    },
-    id:{
-        type:String,
-        required:true
-    },
-    phone:{
-        type:String,
-        required:true
-    },
-    status:{
-        type:String,
-        default:"test"
-    }
-});
-var participants = mongo.model("participant", participantsSchema);
 
-app.listen("4000", ()=>{
+app.listen("3000", ()=>{
     console.log("Start ...");
 });
 app.post("/event/:id/participants",(req,res)=>{
