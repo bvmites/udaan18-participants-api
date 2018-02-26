@@ -1,46 +1,49 @@
 var express         = require("express"),
     bodyParser      = require("body-parser"),
     mongoose        = require("mongoose"),
-    methodOverride  = require("method-override"),
-    Event           = require("./Schema/EventSchema");
+    Event           = require("./Schema/EventSchema"),
+    seedDB          = require("./Schema/seedDB");
 
 var app = express();
 app.use(bodyParser.urlencoded({
     extended: true
 }));
 app.use(bodyParser.json());
-app.use(methodOverride("_method"));
 
 
-mongo.connect("mongodb://localhost/participants");
+mongoose.connect("mongodb://localhost/Events");
 
-app.listen("3000", ()=>{
+seedDB();
+
+app.listen("5000", ()=>{
     console.log("Start ...");
 });
-app.post("/event/:id/participants",(req,res)=>{
-    participants.create(req.body,(err,participant)=>{
+
+// app.post('/events',function(req, res){
+//     Event.create(req.body,function(err, obj){
+//         if(err){
+//             console.log(err);
+//         }else{
+//             return res.json(obj).status(200);
+//         }
+//     });
+// });
+
+app.post("/events/:id/participants",(req,res)=>{
+    var temp_id = req.params.id;
+    Event.findById(temp_id,function(err, resObj){
         if(err){
-            res.status(400).send("Internal Server Error");
+            console.log("Error!");
         }else{
-            console.log(participant);
-            res.status(200).json(participant);
+            resObj.participants.push(req.body);
+            console.log(resObj);
+            Event.findByIdAndUpdate(temp_id,resObj,{new:true},function(err, newObj){
+                if(err){
+                    console.log("error");
+                }else{
+                    return res.json(newObj).status(200);
+                }
+            });
         }
     });
-});
-app.put("/event/:id/participants",(req,res)=>{
-        var test= parseInt(req.body.phone);
-        if(isNaN(test))
-        {
-            console.log(test);
-            return res.status(405).send("Internal Server Error");            
-        }
-
-        participants.findByIdAndUpdate(req.body.p_id,req.body,(err,participant)=>{
-            if(err){
-                console.log(err);
-                return res.status(400).send("Internal Server Error");
-            }else{
-                return res.status(200).json(participant);
-            }
-        });
 });
