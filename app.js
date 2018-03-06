@@ -25,7 +25,7 @@ dotenv.config();
     const userDb = client.db('users');
     console.log('Connected to database');
     app.use('/users', users(userDb));
-    app.use('/', participants(db));
+    app.use('/', authenticate, participants(db));
 
 })();
 
