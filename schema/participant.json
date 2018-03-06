@@ -1,0 +1,28 @@
+{
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string "
+    },
+    "phone": {
+      "type": "string"
+    },
+    "receiptNo": {
+      "type": "string"
+    },
+    "year": {
+      "type": "string"
+    },
+    "eventId": {
+      "type": "string"
+    },
+    "registrationDate": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "name",
+    "phone",
+    "receiptNo"
+  ]
+}
