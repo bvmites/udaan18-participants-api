@@ -5,6 +5,8 @@ module.exports = (db) => ({
         return db.collection('participations').find({eventId: ObjectId(eventId)}).toArray();
     },
     add: async (participantList) => {
-        return db.collection('participations').insertMany(participantList);
+        return db.collection('participations').insertMany(
+            participantList.map(p => ({...p, registrationDate: new Date(p.registrationDate)}))
+        );
     }
 });

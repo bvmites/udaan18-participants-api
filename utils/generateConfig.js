@@ -1,11 +1,8 @@
 const MongoClient = require('mongodb').MongoClient;
 const fs = require('fs');
-const promisify = require('util').promisify;
 const dotenv = require('dotenv');
 
 dotenv.config();
-
-// const writeFile = promisify(fs.writeFile);
 
 (async function () {
     const client = await MongoClient.connect(process.env.DB);

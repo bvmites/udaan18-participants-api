@@ -2,7 +2,17 @@
   "type": "object",
   "properties": {
     "name": {
-      "type": "string "
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      ]
     },
     "phone": {
       "type": "string"
@@ -18,11 +28,17 @@
     },
     "registrationDate": {
       "type": "string"
+    },
+    "branch": {
+      "type": "string"
     }
   },
   "required": [
     "name",
     "phone",
-    "receiptNo"
+    "receiptNo",
+    "year",
+    "eventId",
+    "registrationDate"
   ]
 }

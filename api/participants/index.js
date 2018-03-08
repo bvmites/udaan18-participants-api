@@ -1,8 +1,5 @@
 const router = require('express').Router();
 
-const uuid = require('uuid/v1');
-const uuidToHex = require('uuid-to-hex');
-
 const participantSchema = require('../../schema/participant');
 
 const ObjectId = require('mongodb').ObjectId;
@@ -11,8 +8,12 @@ const Validator = require('jsonschema').Validator;
 const validator = new Validator();
 
 const validEventIds = require('../../config').events.map(p => p._id);
+
+const validateEventIds = (participant) =>
+    validEventIds.includes(participant.eventId);
+
 const validateParticipant = (participant) =>
-    validator.validate(participant, participantSchema).valid && validEventIds.includes(participant.eventId);
+    validator.validate(participant, participantSchema).valid;
 
 module.exports = (db) => {
     const Participants = require('../../db/participant')(db);
@@ -20,30 +21,48 @@ module.exports = (db) => {
         try {
             const participants = request.body;
             const error = new Error();
-
+            console.log(participants);
             if (!(participants instanceof Array)) {
                 error.message = 'Invalid input';
                 error.code = 'ValidationException';
                 throw error;
             }
 
-            // const {valid, invalid} = participants.reduce(
-            //     (acc, p) =>
-            //         validateParticipant(p)
-            //             ? {...acc, valid: [...acc.valid, p]}
-            //             : {...acc, invalid: [...acc.invalid, p]},
-            //     {valid: [], invalid: []}
-            // );
+            let invalidIndexes = [];
+            let invalid = participants.filter((p, i) => {
+                if (!validateParticipant(p)) {
+                    invalidIndexes.push(i);
+                    return true;
+                }
+            });
 
-            const invalid = participants.filter(p => !validateParticipant(p));
             if (invalid.length !== 0) {
-                error.message = 'Event doesn\'t exist';
-                error.code = 'EventNotFound';
+                error.message = 'Invalid input';
+                error.code = 'ValidationException';
+                error.invalidIndexes = invalidIndexes;
                 throw error;
             }
 
-            const result = await Participants.add(participants.map(p => ({...p, eventId: ObjectId(p.eventId)})));
-            response.status(200).json({message: 'Participants added.', invalid});
+            invalid = participants.filter((p, i) => {
+                if (!validateEventIds(p)) {
+                    invalidIndexes.push(i);
+                    return true;
+                }
+            });
+
+            if (invalid.length !== 0) {
+                error.message = 'Event not found';
+                error.code = 'EventNotFound';
+                error.invalidIndexes = invalidIndexes;
+                throw error;
+            }
+
+            const result = await Participants.add(
+                participants.map(p =>
+                    ({...p, eventId: ObjectId(p.eventId)})
+                )
+            );
+            response.status(200).json({message: 'Participants added.'});
 
         } catch (e) {
             if (e.code === 'EventNotFound') {
@@ -53,9 +72,10 @@ module.exports = (db) => {
                 response.status(405);
             }
             else {
+                console.log(e);
                 response.status(500);
             }
-            response.json({message: e.message});
+            response.json({message: e.message, invalid: e.invalidIndexes});
         }
     });
 
