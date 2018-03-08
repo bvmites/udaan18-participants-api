@@ -35,8 +35,7 @@
       "maxLength": "24"
     },
     "registrationDate": {
-      "type": "string",
-      ""
+      "type": "string"
     },
     "branch": {
       "type": "string"
