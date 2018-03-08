@@ -6,7 +6,15 @@ module.exports = (db) => ({
     },
     add: async (participantList) => {
         return db.collection('participations').insertMany(
-            participantList.map(p => ({...p, registrationDate: new Date(p.registrationDate)}))
+            participantList.map(p => {
+                const d = Number(p.registrationDate.slice(0, 2));
+                const m = Number(p.registrationDate.slice(3, 5));
+                const y = Number(p.registrationDate.slice(5));
+                return {
+                    ...p,
+                    registrationDate: new Date(y, m - 1, d)
+                }
+            })
         );
     }
 });
