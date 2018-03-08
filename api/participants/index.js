@@ -23,8 +23,8 @@ module.exports = (db) => {
             const error = new Error();
             console.log(participants);
             if (!(Array.isArray(participants)) || participants.length === 0) {
-                error.message = 'Invalid input';
-                error.code = 'ValidationException';
+                error.message = 'Empty input';
+                error.code = 'EmptyInput';
                 throw error;
             }
 
@@ -70,6 +70,9 @@ module.exports = (db) => {
             }
             else if (e.code === 'ValidationException') {
                 response.status(405);
+            }
+            else if (e.code === 'EmptyInput') {
+                response.status(406);
             }
             else {
                 console.log(e);
