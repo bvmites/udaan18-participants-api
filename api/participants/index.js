@@ -22,7 +22,7 @@ module.exports = (db) => {
             const participants = request.body;
             const error = new Error();
             console.log(participants);
-            if (!(participants instanceof Array)) {
+            if (!(Array.isArray(participants)) || participants.length === 0) {
                 error.message = 'Invalid input';
                 error.code = 'ValidationException';
                 throw error;
