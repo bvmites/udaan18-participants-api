@@ -4,27 +4,35 @@
     "name": {
       "oneOf": [
         {
-          "type": "string"
+          "type": "string",
+          "minLength": "1"
         },
         {
           "type": "array",
           "items": {
-            "type": "string"
+            "type": "string",
+            "minLength": "1"
           }
         }
       ]
     },
     "phone": {
-      "type": "string"
+      "type": "string",
+      "minLength": "10",
+      "maxLength": "10"
     },
     "receiptNo": {
-      "type": "string"
+      "type": "string",
+      "minLength": "1"
     },
     "year": {
-      "type": "string"
+      "type": "string",
+      "minLength": "1"
     },
     "eventId": {
-      "type": "string"
+      "type": "string",
+      "minLength": "24",
+      "maxLength": "24"
     },
     "registrationDate": {
       "type": "string"
