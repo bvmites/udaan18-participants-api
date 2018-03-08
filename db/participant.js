@@ -9,7 +9,7 @@ module.exports = (db) => ({
             participantList.map(p => {
                 const d = Number(p.registrationDate.slice(0, 2));
                 const m = Number(p.registrationDate.slice(3, 5));
-                const y = Number(p.registrationDate.slice(5));
+                const y = Number(p.registrationDate.slice(6));
                 console.log('DATE', y, m, d);
                 return {
                     ...p,
