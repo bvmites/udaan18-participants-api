@@ -59,7 +59,7 @@ module.exports = (db) => {
 
             const result = await Participants.add(
                 participants.map(p =>
-                    ({...p, eventId: ObjectId(p.eventId)})
+                    ({...p, eventId: ObjectId(p.eventId), round: 0, deliveryStatus: 'U'})
                 )
             );
             response.status(200).json({message: 'Participants added.'});
